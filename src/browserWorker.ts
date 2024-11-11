@@ -2,6 +2,7 @@
 import puppeteer, {
   Browser as PuppeteerBrowser,
   Page as PuppeteerPage,
+  type PuppeteerLaunchOptions,
 } from "puppeteer";
 
 declare global {
@@ -12,9 +13,39 @@ declare global {
   }
 }
 
+export class Browser {
+  browser!: PuppeteerBrowser;
+
+  constructor() {}
+
+  static async createBrowser(
+    options: PuppeteerLaunchOptions = {
+      headless: true,
+      args: ["--enable-experimental-web-platform-features", "--no-sandbox"],
+    }
+  ): Promise<Browser> {
+    const browser = new Browser();
+    browser.browser = await puppeteer.launch(options);
+    return browser;
+  }
+
+  async createWorkerFromString(
+    workerScriptString: string
+  ): Promise<BrowserWorker> {
+    const page = await this.browser.newPage();
+    await page.goto("about:blank");
+    const worker = new BrowserWorker(workerScriptString, page);
+    await worker.init();
+    return worker;
+  }
+
+  async close() {
+    await this.browser.close();
+  }
+}
+
 export class BrowserWorker implements Worker, EventTarget {
-  private browser!: PuppeteerBrowser;
-  private page!: PuppeteerPage;
+  private readonly page: PuppeteerPage;
   private readonly workerScriptString: string;
   private readonly eventListeners: Map<
     string,
@@ -49,27 +80,14 @@ export class BrowserWorker implements Worker, EventTarget {
     await this.page.evaluate(() => {
       window.worker.terminate();
     });
-    await this.browser.close();
   }
 
-  private constructor(workerScriptString: string) {
+  constructor(workerScriptString: string, page: PuppeteerPage) {
     this.workerScriptString = workerScriptString;
-  }
-
-  static async createFromString(workerScriptString: string): Promise<Worker> {
-    const worker = new BrowserWorker(workerScriptString);
-    await worker.init();
-    return worker;
+    this.page = page;
   }
 
   async init() {
-    this.browser = await puppeteer.launch({
-      headless: true,
-      args: ["--enable-experimental-web-platform-features", "--no-sandbox"],
-    });
-
-    this.page = (await this.browser.pages())[0];
-
     // Expose functions to receive messages and errors from the worker
     await this.page.exposeFunction("nodeOnMessage", (event: MessageEvent) => {
       if (this.onmessage) {
@@ -84,9 +102,6 @@ export class BrowserWorker implements Worker, EventTarget {
       }
       this.dispatchEvent(new ErrorEvent("error", { error }));
     });
-
-    // Load a blank page
-    await this.page.goto("about:blank");
 
     // Set up the worker
     await this.page.evaluate(async (workerScript) => {

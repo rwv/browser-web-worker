@@ -1,18 +1,23 @@
-import { describe, it, expect, vi } from "vitest";
-import { BrowserWorker } from "./browserWorker";
+import { describe, it, expect, vi, beforeAll } from "vitest";
+import { Browser } from "./browserWorker";
 import fs from "fs/promises";
 
 describe("BrowserWorker", async () => {
   const workerScript = await fs.readFile("./src/test.worker.js", "utf8");
+  let browser: Browser;
+
+  beforeAll(async () => {
+    browser = await Browser.createBrowser();
+  });
 
   it("should create a worker from string", async () => {
-    const worker = await BrowserWorker.createFromString(workerScript);
+    const worker = await browser.createWorkerFromString(workerScript);
     expect(worker).toBeDefined();
     expect(worker.postMessage).toBeDefined();
   });
 
   it("should handle message communication", async () => {
-    const worker = await BrowserWorker.createFromString(workerScript);
+    const worker = await browser.createWorkerFromString(workerScript);
 
     const messagePromise = new Promise<MessageEvent>((resolve) => {
       worker.onmessage = (event) => {
@@ -28,7 +33,7 @@ describe("BrowserWorker", async () => {
   });
 
   it("should handle addEventListener for messages", async () => {
-    const worker = await BrowserWorker.createFromString(workerScript);
+    const worker = await browser.createWorkerFromString(workerScript);
 
     const messagePromise = new Promise<MessageEvent>((resolve) => {
       worker.addEventListener("message", (event) => {
@@ -44,7 +49,7 @@ describe("BrowserWorker", async () => {
   });
 
   it("should handle removeEventListener", async () => {
-    const worker = await BrowserWorker.createFromString(workerScript);
+    const worker = await browser.createWorkerFromString(workerScript);
 
     const listener = vi.fn();
     worker.addEventListener("message", listener);
@@ -59,7 +64,7 @@ describe("BrowserWorker", async () => {
   });
 
   it("should handle multiple event listeners", async () => {
-    const worker = await BrowserWorker.createFromString(workerScript);
+    const worker = await browser.createWorkerFromString(workerScript);
 
     const listener1 = vi.fn();
     const listener2 = vi.fn();
@@ -85,7 +90,7 @@ describe("BrowserWorker", async () => {
     // Create a worker with invalid JavaScript to trigger an error
     const invalidScript = "invalid javascript code {};";
 
-    const worker = await BrowserWorker.createFromString(invalidScript);
+    const worker = await browser.createWorkerFromString(invalidScript);
     const errorPromise = new Promise<ErrorEvent>((resolve) => {
       worker.onerror = (event) => {
         resolve(event);
