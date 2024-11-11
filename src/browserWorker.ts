@@ -4,12 +4,11 @@ import puppeteer, {
   Page as PuppeteerPage,
 } from "puppeteer";
 
-
 declare global {
   interface Window {
     worker: Worker;
     nodeOnMessage: (message: MessageEvent) => void;
-    nodeOnError: (error: any) => void;
+    nodeOnError: (error: ErrorEvent) => void;
   }
 }
 
@@ -17,7 +16,11 @@ export class BrowserWorker implements Worker, EventTarget {
   private browser!: PuppeteerBrowser;
   private page!: PuppeteerPage;
   private readonly workerScriptString: string;
-  private readonly eventListeners: Map<string, Set<EventListenerOrEventListenerObject>> = new Map();
+  private readonly eventListeners: Map<
+    string,
+    Set<EventListenerOrEventListenerObject>
+  > = new Map();
+  private isTerminated = false;
 
   // Implementing Worker
 
@@ -27,7 +30,6 @@ export class BrowserWorker implements Worker, EventTarget {
   onmessageerror: ((this: Worker, ev: MessageEvent) => any) | null = null;
   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/ServiceWorker/error_event) */
   onerror: ((this: AbstractWorker, ev: ErrorEvent) => any) | null = null;
-
 
   /**
    * Clones message and transmits it to worker's global environment. transfer can be passed as a list of objects that are to be transferred rather than cloned.
@@ -41,8 +43,11 @@ export class BrowserWorker implements Worker, EventTarget {
   }
 
   async terminate() {
+    if (this.isTerminated) return;
+    this.isTerminated = true;
+
     await this.page.evaluate(() => {
-      (window).worker.terminate();
+      window.worker.terminate();
     });
     await this.browser.close();
   }
@@ -99,6 +104,9 @@ export class BrowserWorker implements Worker, EventTarget {
       // Forward errors from the worker to Node.js
       window.worker.onerror = (e: ErrorEvent) => {
         window.nodeOnError({
+          ...e,
+          type: "error",
+          error: e.error,
           message: e.message,
           filename: e.filename,
           lineno: e.lineno,
@@ -122,17 +130,17 @@ export class BrowserWorker implements Worker, EventTarget {
     this.eventListeners.get(type)!.add(listener);
 
     // Special handling for 'message' and 'error' events
-    if (type === 'message') {
+    if (type === "message") {
       this.onmessage = (ev: MessageEvent) => {
-        if (typeof listener === 'function') {
+        if (typeof listener === "function") {
           listener(ev);
         } else {
           listener.handleEvent(ev);
         }
       };
-    } else if (type === 'error') {
+    } else if (type === "error") {
       this.onerror = (ev: ErrorEvent) => {
-        if (typeof listener === 'function') {
+        if (typeof listener === "function") {
           listener(ev);
         } else {
           listener.handleEvent(ev);
@@ -157,9 +165,9 @@ export class BrowserWorker implements Worker, EventTarget {
     }
 
     // Special handling for 'message' and 'error' events
-    if (type === 'message' && this.onmessage) {
+    if (type === "message" && this.onmessage) {
       this.onmessage = null;
-    } else if (type === 'error' && this.onerror) {
+    } else if (type === "error" && this.onerror) {
       this.onerror = null;
     }
   }
@@ -169,7 +177,7 @@ export class BrowserWorker implements Worker, EventTarget {
     if (!listeners) return true;
 
     for (const listener of listeners) {
-      if (typeof listener === 'function') {
+      if (typeof listener === "function") {
         listener.call(this, event);
       } else {
         listener.handleEvent(event);
