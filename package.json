@@ -1,6 +1,6 @@
 {
   "name": "browser-web-worker",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Run Web Workers in Node.js using a real Chrome browser via Puppeteer",
   "main": "lib/index.js",
   "module": "lib/index.js",
