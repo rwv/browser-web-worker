@@ -20,9 +20,6 @@
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
-  "dependencies": {
-    "puppeteer": "^23.7.1"
-  },
   "files": [
     "lib",
     "src"
@@ -39,6 +36,7 @@
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
     "prettier": "3.3.3",
+    "puppeteer": "^23.7.1",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.14.0",
@@ -53,5 +51,8 @@
     "*.{json,md,yml}": [
       "prettier --write"
     ]
+  },
+  "peerDependencies": {
+    "puppeteer": "^23.7.1"
   }
 }
