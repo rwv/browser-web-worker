@@ -1,12 +1,71 @@
 {
   "name": "browser-worker",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Run Web Workers in Node.js using a real Chrome browser via Puppeteer",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "type": "module",
+  "types": "lib/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublishOnly": "pnpm run build",
+    "build": "tsc",
+    "lint": "eslint --fix .",
+    "lint-check": "eslint . --no-fix",
+    "format": "prettier --write .",
+    "format-check": "prettier --check .",
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "coverage": "vitest run --coverage",
+    "prepare": "husky"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "keywords": [
+    "web-workers",
+    "browser",
+    "puppeteer",
+    "worker",
+    "threading"
+  ],
+  "author": "rwv",
+  "license": "MIT",
+  "repository": "https://github.com/rwv/browser-worker",
+  "homepage": "https://github.com/rwv/browser-worker",
+  "bugs": {
+    "url": "https://github.com/rwv/browser-worker/issues"
+  },
+  "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
+  "files": [
+    "lib",
+    "src"
+  ],
+  "devDependencies": {
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
+    "@commitlint/types": "^19.5.0",
+    "@eslint/js": "^9.14.0",
+    "@types/eslint__js": "^8.42.3",
+    "@types/node": "^22.9.0",
+    "@vitest/coverage-v8": "2.1.4",
+    "eslint": "^9.14.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "prettier": "3.3.3",
+    "puppeteer": "^23.7.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.14.0",
+    "vitest": "^2.1.4"
+  },
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx}": [
+      "eslint --fix",
+      "prettier --write",
+      "vitest related --run"
+    ],
+    "*.{json,md,yml}": [
+      "prettier --write"
+    ]
+  },
+  "peerDependencies": {
+    "puppeteer": "^23.7.1"
+  }
 }
