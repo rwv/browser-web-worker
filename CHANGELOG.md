@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/rwv/browser-web-worker/compare/v2.0.0...v2.0.1) (2024-11-12)
+
+
+### Bug Fixes
+
+* **ci:** publish to npm packge using `--access public` ([4b7e58b](https://github.com/rwv/browser-web-worker/commit/4b7e58bca272491ed26cfeb6bfdebd886a1dd108))
+
 ## [2.0.0](https://github.com/rwv/browser-worker/compare/v1.0.0...v2.0.0) (2024-11-12)
 
 
