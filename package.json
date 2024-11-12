@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "build": "tsc",
     "lint": "eslint --fix .",
     "lint-check": "eslint . --no-fix",
     "format": "prettier --write .",
