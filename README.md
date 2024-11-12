@@ -1,6 +1,7 @@
 # Browser Web Worker
 
 [![Build](https://github.com/rwv/browser-web-worker/actions/workflows/build.yml/badge.svg)](https://github.com/rwv/browser-web-worker/actions/workflows/build.yml)
+[![NPM Version](https://img.shields.io/npm/v/browser-web-worker)](https://www.npmjs.com/package/browser-web-worker)
 
 Run Web Workers in Node.js using a real Chrome browser via Puppeteer.
 
