@@ -1,3 +1,4 @@
+/* v8 ignore start */
 export { BrowserWorker as default } from "./browser-worker";
 
 export { BrowserWorker } from "./browser-worker";

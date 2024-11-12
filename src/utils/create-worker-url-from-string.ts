@@ -5,10 +5,12 @@ export async function createWorkerURLFromString(
   page: PuppeteerPage,
 ): Promise<string> {
   return await page.evaluate(
+    /* v8 ignore start */
     (workerScriptString: string) =>
       URL.createObjectURL(
         new Blob([workerScriptString], { type: "text/javascript" }),
       ),
+    /* v8 ignore stop */
     workerScriptString,
   );
 }
