@@ -71,6 +71,13 @@ const worker3 = await createWorkerFromURL(
 );
 ```
 
+## TODOs
+
+- Fix origin check to allow worker from `file://` scheme and handle cross-origin worker scripts securely
+- Add support for transferable objects in postMessage (Blob, ArrayBuffer, MessagePort, etc.)
+- Implement proper worker termination with cleanup of all resources and event listeners
+- Add examples for common use cases in documentation
+
 ## License
 
 MIT
