@@ -39,6 +39,7 @@ describe("createWorkerURLFromString", () => {
         worker.terminate();
         return true;
       } catch (error) {
+        console.error(error);
         return false;
       }
     }, url);

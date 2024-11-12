@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeAll } from "vitest";
-import fs from "fs/promises";
 import puppeteer, { Page, Browser } from "puppeteer";
 import { createWorkerURLFromString } from "./utils";
 import { BrowserWorker } from "./browser-worker";
@@ -112,7 +111,7 @@ describe("BrowserWorker", async () => {
     const invalidScript = "invalid javascript code {};";
     const invalidScriptURL = await createWorkerURLFromString(
       invalidScript,
-      page
+      page,
     );
 
     const worker = new BrowserWorker({
@@ -131,7 +130,7 @@ describe("BrowserWorker", async () => {
     expect(error).toBeDefined();
     expect(error.type).toBe("error");
     expect(error.message).toBe(
-      "Uncaught SyntaxError: Unexpected identifier 'javascript'"
+      "Uncaught SyntaxError: Unexpected identifier 'javascript'",
     );
   });
 });

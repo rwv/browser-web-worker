@@ -5,11 +5,11 @@ import fs from "fs/promises";
 
 export async function createWorkerFromString(
   workerScriptString: string,
-  page: PuppeteerPage
+  page: PuppeteerPage,
 ) {
   const workerScriptURL = await createWorkerURLFromString(
     workerScriptString,
-    page
+    page,
   );
 
   const worker = new BrowserWorker({ workerScriptURL, page });
@@ -19,7 +19,7 @@ export async function createWorkerFromString(
 
 export async function createWorkerFromURL(
   workerScriptURL: string,
-  page: PuppeteerPage
+  page: PuppeteerPage,
 ) {
   const worker = new BrowserWorker({ workerScriptURL, page });
   await worker.initPromise;
@@ -28,7 +28,7 @@ export async function createWorkerFromURL(
 
 export async function createWorkerFromFile(
   workerScriptPath: string,
-  page: PuppeteerPage
+  page: PuppeteerPage,
 ) {
   const workerContent = await fs.readFile(workerScriptPath, "utf8");
 

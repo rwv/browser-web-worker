@@ -29,10 +29,13 @@ export class BrowserWorker implements Worker, EventTarget {
   // Implementing Worker
 
   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Worker/message_event) */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onmessage: ((this: Worker, ev: MessageEvent) => any) | null = null;
   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/Worker/messageerror_event) */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onmessageerror: ((this: Worker, ev: MessageEvent) => any) | null = null;
   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/ServiceWorker/error_event) */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onerror: ((this: AbstractWorker, ev: ErrorEvent) => any) | null = null;
 
   constructor(options: { workerScriptURL: string; page: PuppeteerPage }) {
@@ -56,7 +59,7 @@ export class BrowserWorker implements Worker, EventTarget {
           this.onmessage(event);
         }
         this.dispatchEvent(new MessageEvent("message", { data: event.data }));
-      }
+      },
     );
 
     await this.page.exposeFunction(
@@ -66,7 +69,7 @@ export class BrowserWorker implements Worker, EventTarget {
           this.onerror(error);
         }
         this.dispatchEvent(new ErrorEvent("error", { ...error }));
-      }
+      },
     );
 
     // Set up the worker
@@ -79,7 +82,7 @@ export class BrowserWorker implements Worker, EventTarget {
         workerScriptURL: string,
         workerKey: WorkerKey,
         nodeMessageKey: NodeOnMessageKey,
-        nodeErrorMessageKey: NodeOnErrorKey
+        nodeErrorMessageKey: NodeOnErrorKey,
       ) => {
         // Create a worker
         window[workerKey] = new Worker(workerScriptURL);
@@ -105,7 +108,7 @@ export class BrowserWorker implements Worker, EventTarget {
       this.workerScriptURL,
       workerKey,
       messageKey,
-      errorKey
+      errorKey,
     );
   }
 
@@ -114,6 +117,7 @@ export class BrowserWorker implements Worker, EventTarget {
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Worker/postMessage)
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   postMessage(message: any) {
     const workerKey = this.workerObjectKey;
     return this.page.evaluate(
@@ -121,7 +125,7 @@ export class BrowserWorker implements Worker, EventTarget {
         window[workerKey].postMessage(msg);
       },
       message,
-      workerKey
+      workerKey,
     );
   }
 
@@ -142,7 +146,8 @@ export class BrowserWorker implements Worker, EventTarget {
   addEventListener(
     type: string,
     listener: EventListenerOrEventListenerObject | null,
-    options?: boolean | AddEventListenerOptions
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    options?: boolean | AddEventListenerOptions,
   ): void {
     if (!listener) return;
 
@@ -175,7 +180,8 @@ export class BrowserWorker implements Worker, EventTarget {
   removeEventListener(
     type: string,
     listener: EventListenerOrEventListenerObject | null,
-    options?: boolean | EventListenerOptions
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    options?: boolean | EventListenerOptions,
   ): void {
     if (!listener) return;
 
