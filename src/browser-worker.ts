@@ -79,6 +79,7 @@ export class BrowserWorker implements Worker, EventTarget {
     const errorKey = this.nodeOnErrorObjectKey;
 
     await this.page.evaluate(
+      /* v8 ignore start */
       async (
         workerScriptURL: string,
         workerKey: WorkerKey,
@@ -106,6 +107,7 @@ export class BrowserWorker implements Worker, EventTarget {
           });
         };
       },
+      /* v8 ignore stop */
       this.workerScriptURL,
       workerKey,
       messageKey,
@@ -122,9 +124,11 @@ export class BrowserWorker implements Worker, EventTarget {
   postMessage(message: any) {
     const workerKey = this.workerObjectKey;
     return this.page.evaluate(
+      /* v8 ignore start */
       (msg, workerKey: WorkerKey) => {
         window[workerKey].postMessage(msg);
       },
+      /* v8 ignore stop */
       message,
       workerKey,
     );
