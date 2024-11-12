@@ -4,6 +4,7 @@ import puppeteer, { Page, Browser } from "puppeteer";
 import { createWorkerFromString, createWorkerFromFile } from "./create";
 import { tmpdir } from "os";
 import path from "path";
+import { mkdtemp } from "fs/promises";
 
 const testWorkerString = `
 self.addEventListener('message', (event) => {
@@ -42,7 +43,8 @@ describe("create worker", async () => {
   });
 
   it("should handle message communication using createWorkerFromFile", async () => {
-    const filePath = path.join(tmpdir(), `${crypto.randomUUID()}.js`);
+    const dir = await mkdtemp(path.join(tmpdir(), "browser-worker-test-"));
+    const filePath = path.join(dir, `test-worker.js`);
     await fs.writeFile(filePath, testWorkerString);
     const worker = await createWorkerFromFile(filePath, page);
     const messagePromise = new Promise<MessageEvent>((resolve) => {

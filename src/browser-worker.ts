@@ -1,4 +1,5 @@
 import { Page as PuppeteerPage } from "puppeteer";
+import crypto from "crypto";
 
 type WorkerKey = `worker-${string}`;
 type NodeOnMessageKey = `nodeOnMessage-${string}`;
