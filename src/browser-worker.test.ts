@@ -1,23 +1,41 @@
 import { describe, it, expect, vi, beforeAll } from "vitest";
-import { Browser } from "./browserWorker";
 import fs from "fs/promises";
+import puppeteer, { Page, Browser } from "puppeteer";
+import { createWorkerURLFromString } from "./utils";
+import { BrowserWorker } from "./browser-worker";
+
+const testWorkerString = `
+self.addEventListener('message', (event) => {
+  // Send a message back to the main thread
+  self.postMessage(event.data);
+});
+`;
 
 describe("BrowserWorker", async () => {
-  const workerScript = await fs.readFile("./src/test.worker.js", "utf8");
   let browser: Browser;
+  let page: Page;
+  let workerScriptURL: string;
 
   beforeAll(async () => {
-    browser = await Browser.createBrowser();
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ["--enable-experimental-web-platform-features", "--no-sandbox"],
+    });
+    page = await browser.newPage();
+    await page.goto("about:blank");
+    workerScriptURL = await createWorkerURLFromString(testWorkerString, page);
   });
 
   it("should create a worker from string", async () => {
-    const worker = await browser.createWorkerFromString(workerScript);
+    const worker = new BrowserWorker({ workerScriptURL, page });
+    await worker.initPromise;
     expect(worker).toBeDefined();
     expect(worker.postMessage).toBeDefined();
   });
 
   it("should handle message communication", async () => {
-    const worker = await browser.createWorkerFromString(workerScript);
+    const worker = new BrowserWorker({ workerScriptURL, page });
+    await worker.initPromise;
 
     const messagePromise = new Promise<MessageEvent>((resolve) => {
       worker.onmessage = (event) => {
@@ -33,7 +51,8 @@ describe("BrowserWorker", async () => {
   });
 
   it("should handle addEventListener for messages", async () => {
-    const worker = await browser.createWorkerFromString(workerScript);
+    const worker = new BrowserWorker({ workerScriptURL, page });
+    await worker.initPromise;
 
     const messagePromise = new Promise<MessageEvent>((resolve) => {
       worker.addEventListener("message", (event) => {
@@ -49,7 +68,8 @@ describe("BrowserWorker", async () => {
   });
 
   it("should handle removeEventListener", async () => {
-    const worker = await browser.createWorkerFromString(workerScript);
+    const worker = new BrowserWorker({ workerScriptURL, page });
+    await worker.initPromise;
 
     const listener = vi.fn();
     worker.addEventListener("message", listener);
@@ -64,7 +84,8 @@ describe("BrowserWorker", async () => {
   });
 
   it("should handle multiple event listeners", async () => {
-    const worker = await browser.createWorkerFromString(workerScript);
+    const worker = new BrowserWorker({ workerScriptURL, page });
+    await worker.initPromise;
 
     const listener1 = vi.fn();
     const listener2 = vi.fn();
@@ -89,8 +110,17 @@ describe("BrowserWorker", async () => {
   it("should handle error events", async () => {
     // Create a worker with invalid JavaScript to trigger an error
     const invalidScript = "invalid javascript code {};";
+    const invalidScriptURL = await createWorkerURLFromString(
+      invalidScript,
+      page
+    );
 
-    const worker = await browser.createWorkerFromString(invalidScript);
+    const worker = new BrowserWorker({
+      workerScriptURL: invalidScriptURL,
+      page,
+    });
+    await worker.initPromise;
+
     const errorPromise = new Promise<ErrorEvent>((resolve) => {
       worker.onerror = (event) => {
         resolve(event);
