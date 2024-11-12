@@ -43,7 +43,7 @@ describe("create worker", async () => {
   });
 
   it("should handle message communication using createWorkerFromFile", async () => {
-    const dir = await mkdtemp(path.join(tmpdir(), "browser-worker-test-"));
+    const dir = await mkdtemp(path.join(tmpdir(), "browser-web-worker-test-"));
     const filePath = path.join(dir, `test-worker.js`);
     await fs.writeFile(filePath, testWorkerString);
     const worker = await createWorkerFromFile(filePath, page);

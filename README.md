@@ -1,6 +1,6 @@
-# Browser Worker
+# Browser Web Worker
 
-[![Build](https://github.com/rwv/browser-worker/actions/workflows/build.yml/badge.svg)](https://github.com/rwv/browser-worker/actions/workflows/build.yml)
+[![Build](https://github.com/rwv/browser-web-worker/actions/workflows/build.yml/badge.svg)](https://github.com/rwv/browser-web-worker/actions/workflows/build.yml)
 
 Run Web Workers in Node.js using a real Chrome browser via Puppeteer.
 
@@ -16,7 +16,7 @@ Run Web Workers in Node.js using a real Chrome browser via Puppeteer.
 ## Installation
 
 ```bash
-pnpm add browser-worker puppeteer
+pnpm add browser-web-worker puppeteer
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ pnpm add browser-worker puppeteer
 ### Basic Example
 
 ```typescript
-import { createWorkerFromString } from "browser-worker";
+import { createWorkerFromString } from "browser-web-worker";
 import puppeteer from "puppeteer";
 
 // Launch browser
@@ -57,7 +57,7 @@ import {
   createWorkerFromString,
   createWorkerFromFile,
   createWorkerFromURL,
-} from "browser-worker";
+} from "browser-web-worker";
 
 // 1. From a string
 const worker1 = await createWorkerFromString(workerScript, page);

@@ -1,7 +1,7 @@
 /* v8 ignore start */
-export { BrowserWorker as default } from "./browser-worker";
+export { BrowserWebWorker as default } from "./browser-web-worker";
 
-export { BrowserWorker } from "./browser-worker";
+export { BrowserWebWorker } from "./browser-web-worker";
 export {
   createWorkerFromString,
   createWorkerFromFile,

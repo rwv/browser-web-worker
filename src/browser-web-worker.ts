@@ -13,7 +13,7 @@ declare global {
   }
 }
 
-export class BrowserWorker implements Worker, EventTarget {
+export class BrowserWebWorker implements Worker, EventTarget {
   private readonly page: PuppeteerPage;
   private readonly workerScriptURL: string;
   private readonly eventListeners: Map<

@@ -1,6 +1,6 @@
 import { Page as PuppeteerPage } from "puppeteer";
 import { createWorkerURLFromString } from "./utils";
-import { BrowserWorker } from "./browser-worker";
+import { BrowserWebWorker } from "./browser-web-worker";
 import fs from "fs/promises";
 
 export async function createWorkerFromString(
@@ -12,7 +12,7 @@ export async function createWorkerFromString(
     page,
   );
 
-  const worker = new BrowserWorker({ workerScriptURL, page });
+  const worker = new BrowserWebWorker({ workerScriptURL, page });
   await worker.initPromise;
   return worker;
 }
@@ -21,7 +21,7 @@ export async function createWorkerFromURL(
   workerScriptURL: string,
   page: PuppeteerPage,
 ) {
-  const worker = new BrowserWorker({ workerScriptURL, page });
+  const worker = new BrowserWebWorker({ workerScriptURL, page });
   await worker.initPromise;
   return worker;
 }
