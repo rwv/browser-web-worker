@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/rwv/browser-web-worker/compare/v2.0.1...v2.0.2) (2024-11-13)
+
+
+### Performance Improvements
+
+* exclude `src` and `*.test.ts` from published pkg ([#8](https://github.com/rwv/browser-web-worker/issues/8)) ([60042b1](https://github.com/rwv/browser-web-worker/commit/60042b1955a2b4b4519821fa590134d3abdd76ff))
+
 ## [2.0.1](https://github.com/rwv/browser-web-worker/compare/v2.0.0...v2.0.1) (2024-11-12)
 
 
